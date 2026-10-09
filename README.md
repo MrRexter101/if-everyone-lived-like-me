@@ -2,11 +2,15 @@
 
 A 2-minute quiz about convenience-store plastic habits (bags, straws, cutlery, takeaway boxes). It shows your yearly plastic use, what that would add up to if everyone lived like you, a "what if" slider, a 30-day challenge with points and badges, and a sample policy dashboard. English and Thai.
 
-It is one static file (`index.html`) with no build step and no outside requests, so it runs on GitHub Pages as-is.
+**Live:** https://mrrexter101.github.io/if-everyone-lived-like-me/
+
+It is one static file (`index.html`) with no build step and no outside requests, so it runs on GitHub Pages as-is. `og.png` is the preview image shown when the link is shared in LINE, Facebook, WhatsApp, X and similar apps.
 
 > **Status: prototype.** Several numbers are placeholders and the dashboard and community counters use mock data. See [Before going public](#before-going-public).
 
 ## Host it on GitHub Pages
+
+Already live at the link above; pushing to `main` redeploys in about a minute. To host a copy elsewhere:
 
 1. Create a GitHub repo and push this folder to the `main` branch.
 2. In the repo go to **Settings → Pages**.
@@ -67,5 +71,5 @@ To collect real responses, replace `saveResult()` with a `POST` to a database or
 - The landing page says "12,480 people have taken the quiz · 96,300 bags avoided". Those are mock numbers (`communityPeople`, `communityBags`). Set them to 0 or hide the line until there is real data.
 - Replace the placeholder values in `CONFIG` with sourced figures and cite the sources.
 - The leaderboard ("Chula", "Thammasat") and the dashboard are sample data.
+- If the address changes (new repo name or custom domain), update `canonical`, `og:url` and `og:image` in the `<head>` of `index.html`.
 - Some text is English only, even in Thai mode: the "How we calculated this" panel, the policy asks list, the policy brief and the share card.
-- The share card image does not include the site URL. Add it once the final address is known.

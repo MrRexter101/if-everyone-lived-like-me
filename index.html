@@ -3,10 +3,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>If Everyone Lived Like Me</title>
 <meta name="description" content="How much plastic do you use in a year? A 2-minute quiz about your convenience-store habits. No login, no judgement.">
+<link rel="canonical" href="https://mrrexter101.github.io/if-everyone-lived-like-me/">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://mrrexter101.github.io/if-everyone-lived-like-me/">
 <meta property="og:title" content="If Everyone Lived Like Me">
 <meta property="og:description" content="How much plastic do you use in a year? A 2-minute quiz about your convenience-store habits.">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://mrrexter101.github.io/if-everyone-lived-like-me/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="If Everyone Lived Like Me: How much plastic do YOU use in a year? Take the 2-minute quiz.">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FBF7EF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#121a15" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
@@ -114,7 +120,8 @@ function shareCard(){const c=document.createElement("canvas");c.width=600;c.heig
  x.fillStyle="#1d2b22";x.font="22px sans-serif";x.fillText("My plastic footprint at the convenience store:",24,140);
  x.fillStyle="#1F7A4D";x.font="bold 70px sans-serif";x.fillText((r.g/1000).toFixed(1)+" kg/yr",24,230);
  x.fillStyle="#1d2b22";x.font="22px sans-serif";x.fillText("If everyone lived like me: "+fm(r.tonnes)+" tonnes",24,290);
- x.fillStyle="#FF6B2C";x.font="bold 24px sans-serif";x.fillText("What's yours? Take the quiz →",24,360);shareImg=c.toDataURL("image/png");draw()}
+ x.fillStyle="#FF6B2C";x.font="bold 24px sans-serif";x.fillText("What's yours? Take the quiz →",24,345);
+ if(location.protocol.startsWith("http")){x.fillStyle="#55655b";x.font="18px sans-serif";x.fillText(location.host+location.pathname,24,378)}shareImg=c.toDataURL("image/png");draw()}
 function brief(){const s=C.sample,top=[...s.regions].sort((a,b)=>b[1]-a[1])[0];
  const txt=`POLICY BRIEF (sample data, n=${s.n})\nFinding 1: Highest average use is in ${top[0]} (${top[1]} bags/person/yr).\nAsk: Mandate point-of-sale bag charges or opt-in bags at convenience stores.\nFinding 2: Only ${s.ownBagByAge[0][1]}% of 18-24s bring their own bag.\nAsk: Fund reusable-bag campaigns and discounts for youth.\nFinding 3: Hot food drives bag use (${s.drivers[0][1]}%).\nAsk: Require reusable or compostable packaging standards for hot food.\nCaveat: participant data, not representative of the full population.`;
  try{navigator.clipboard.writeText(txt).then(()=>toast(t("copied")),()=>{})}catch(e){}$("bp").textContent=txt;$("bp").hidden=false}
