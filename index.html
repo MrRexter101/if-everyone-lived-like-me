@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>If Everyone Lived Like Me</title>
+<meta name="description" content="How much plastic do you use in a year? A 2-minute quiz about your convenience-store habits. No login, no judgement.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="If Everyone Lived Like Me">
+<meta property="og:description" content="How much plastic do you use in a year? A 2-minute quiz about your convenience-store habits.">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#FBF7EF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a15" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
+<!-- Setup notes, placeholders and formula: see README.md -->
+<style>
+:root{--bg:#FBF7EF;--card:#fff;--ink:#1d2b22;--mut:#55655b;--g:#1F7A4D;--gl:#E4F3E8;--ac:#FF6B2C;--bd:#e3dccb;--on-g:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a15;--card:#1b261f;--ink:#f1f5ee;--mut:#a9b8ae;--g:#5fd08f;--gl:#23352a;--bd:#2f4236;--on-g:#0b1a11}}
+:root[data-theme="dark"]{--bg:#121a15;--card:#1b261f;--ink:#f1f5ee;--mut:#a9b8ae;--g:#5fd08f;--gl:#23352a;--bd:#2f4236;--on-g:#0b1a11}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 system-ui,-apple-system,"Noto Sans Thai",Segoe UI,sans-serif}
+main{max-width:560px;margin:0 auto;padding:14px 16px 40px}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 0 12px}header>span:last-child{display:flex;flex-shrink:0}
+.logo{font-weight:800;color:var(--g)}
+.pill,.btn,.opt,select{font:inherit;border-radius:16px;cursor:pointer}
+.pill{border:2px solid var(--bd);background:var(--card);color:var(--ink);padding:6px 12px;margin-left:6px}
+.btn{border:0;background:var(--ac);color:#1b1b1b;font-weight:800;padding:16px 22px;width:100%;font-size:18px;margin-top:14px}
+.btn.alt{background:var(--g);color:var(--on-g)}.btn:disabled{opacity:.45}
+.card{background:var(--card);border:2px solid var(--bd);border-radius:24px;padding:20px;margin:12px 0}
+h1{font-size:34px;line-height:1.15;margin:8px 0}h2{font-size:23px;margin:4px 0 10px}
+.mut{color:var(--mut);font-size:15px}.big{font-size:46px;font-weight:900;color:var(--g);line-height:1.1}
+.bar{height:12px;background:var(--gl);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--g);transition:width .4s}
+.opt{display:block;width:100%;text-align:left;border:2px solid var(--bd);background:var(--card);color:var(--ink);padding:16px;margin:10px 0;font-size:18px}
+.opt.on{border-color:var(--g);background:var(--gl);font-weight:700}
+select{width:100%;padding:14px;border:2px solid var(--bd);background:var(--card);color:var(--ink);font-size:18px}
+.tabs{display:flex;gap:6px;margin:6px 0}.tabs button{flex:1;padding:10px 4px;border:2px solid var(--bd);border-radius:14px;background:var(--card);color:var(--ink);font:inherit;font-size:15px}
+.tabs .on{background:var(--g);color:var(--on-g);border-color:var(--g)}
+input[type=range]{width:100%;height:36px;accent-color:var(--g)}
+.row{display:grid;grid-template-columns:96px 1fr 46px;gap:8px;align-items:center;margin:8px 0;font-size:15px}
+.badge{display:inline-block;background:var(--gl);border-radius:20px;padding:6px 12px;margin:3px;font-size:15px}
+details{margin-top:10px}summary{cursor:pointer;font-weight:700;color:var(--g)}
+pre{white-space:pre-wrap;font-family:inherit;font-size:14px;line-height:1.5;background:var(--gl);padding:12px;border-radius:12px}
+a{color:var(--g)}button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.cf{position:fixed;top:-20px;font-size:24px;pointer-events:none;animation:fall 1.6s ease-in forwards;z-index:9}
+@keyframes fall{to{transform:translateY(105vh) rotate(540deg);opacity:.2}}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--g);color:var(--on-g);padding:12px 18px;border-radius:20px;display:none;z-index:10}
+@media(prefers-reduced-motion:reduce){.cf{display:none}.bar i{transition:none}}
+</style></head><body>
+<main><header><span class="logo">🌿 If Everyone Lived Like Me</span><span><button class="pill" onclick="go('dash')" id="navd"></button><button class="pill" onclick="tog()" id="lg" aria-label="Language">TH</button></span></header>
+<div id="app"></div></main><div id="toast" role="status"></div>
+<script>
+/* ===== EDITABLE CONFIG: all numbers in one place ===== */
+const CONFIG={
+  bagG:6,                 // PLACEHOLDER avg plastic bag weight (g) - replace with sourced value
+  cutleryG:3,             // PLACEHOLDER grams per straw/cup/cutlery item
+  containerG:20,          // PLACEHOLDER grams per takeaway container
+  population:20000000,    // PLACEHOLDER target population - replace with sourced value
+  bagShare:{never:0,sometimes:.25,usually:.6,always:.95},      // share of visits a bag is taken (range midpoints)
+  ownBagCut:{never:0,sometimes:.2,usually:.5,always:.8},       // reduction when bringing own bag
+  cutleryPerVisit:{never:0,sometimes:.2,usually:.5,always:.9},
+  takeawayPerWeek:{never:0,sometimes:1,usually:3,always:6},
+  persona:{eco:100,occ:300},                                   // yearly bags thresholds
+  communityPeople:12480,communityBags:96300,                   // MOCK starting counters
+  sample:{ // MOCK dashboard data - replace with real aggregates
+    regions:[["Bangkok",212],["Central",188],["East",174],["North",141],["Northeast",133],["South",169]],
+    ownBagByAge:[["18-24",31],["25-34",38],["35-44",44],["45+",52]],
+    drivers:[["Hot food",64],["Ready meals",52],["Drinks",33],["Snacks",21]],
+    n:4210}
+};
+const C=CONFIG;
+const FQ=[["never",{en:"Never",th:"ไม่เคย"}],["sometimes",{en:"Sometimes",th:"บางครั้ง"}],["usually",{en:"Usually",th:"บ่อย"}],["always",{en:"Always",th:"ทุกครั้ง"}]];
+const Q=[
+{id:"visits",t:{en:"How many times a week do you visit a convenience store like 7-Eleven?",th:"ไปร้านสะดวกซื้ออย่าง 7-Eleven สัปดาห์ละกี่ครั้ง?"},o:[[.5,{en:"0–1",th:"0–1"}],[2.5,{en:"2–3",th:"2–3"}],[5,{en:"4–6",th:"4–6"}],[9,{en:"7 or more",th:"7 ครั้งขึ้นไป"}]]},
+{id:"buys",multi:1,t:{en:"What do you usually buy? (pick any)",th:"ปกติซื้ออะไร? (เลือกได้หลายอย่าง)"},o:[["drinks",{en:"🥤 Drinks",th:"🥤 เครื่องดื่ม"}],["snacks",{en:"🍿 Snacks",th:"🍿 ขนม"}],["hot",{en:"🌭 Hot food",th:"🌭 อาหารร้อน"}],["ready",{en:"🍱 Ready meals",th:"🍱 อาหารพร้อมทาน"}]]},
+{id:"bag",t:{en:"On those visits, how often do you take a plastic bag?",th:"ซื้อแล้วรับถุงพลาสติกบ่อยแค่ไหน?"},o:FQ},
+{id:"own",t:{en:"How often do you bring your own bag?",th:"นำถุงมาเองบ่อยแค่ไหน?"},o:FQ},
+{id:"cut",t:{en:"How often do you use a straw, plastic cup or cutlery?",th:"ใช้หลอด แก้วพลาสติก หรือช้อนส้อมบ่อยแค่ไหน?"},o:FQ},
+{id:"take",t:{en:"How often do you buy takeaway food in plastic containers?",th:"ซื้ออาหารกลับบ้านใส่กล่องพลาสติกบ่อยแค่ไหน?"},o:FQ},
+{id:"age",sel:1,t:{en:"Your age group (optional)",th:"ช่วงอายุ (ไม่บังคับ)"},o:["18-24","25-34","35-44","45+"].map(x=>[x,{en:x,th:x}])},
+{id:"region",sel:1,t:{en:"Your region (optional)",th:"ภูมิภาค (ไม่บังคับ)"},o:[["Bangkok",{en:"Bangkok",th:"กรุงเทพฯ"}],["Central",{en:"Central",th:"ภาคกลาง"}],["East",{en:"East",th:"ภาคตะวันออก"}],["North",{en:"North",th:"ภาคเหนือ"}],["Northeast",{en:"Northeast",th:"ภาคตะวันออกเฉียงเหนือ"}],["South",{en:"South",th:"ภาคใต้"}]]}
+];
+const S={en:{hook:"How much plastic do YOU use in a year?",sub:"A 2-minute quiz about your convenience-store habits. No login, no judgement.",start:"Start the quiz",live:(p,b)=>`${p} people have taken the quiz · ${b} bags avoided`,next:"Next",back:"Back",show:"Show my result",consent:"I agree my anonymous answers may be stored for research and advocacy.",priv:"Privacy notice",privT:"We collect only these answers plus your optional age group and region. No name, email or IP is stored. Data is anonymous, used in aggregate only, and never shown individually. You can take the quiz without consenting and nothing will be stored. (Plain-language notice for PDPA; replace with your legal text.)",yr:"Your plastic per year",bagsYr:"bags a year",ifall:"If everyone lived like me…",tonnes:"tonnes of plastic a year",how:"How we calculated this",persona:{eco:["🌟 Eco Champion","You're already doing well. Keep going and inspire friends."],occ:["🙂 Occasional Carrier","You're in the middle, so small swaps will make a big difference."],hoard:["🛍️ Bag Hoarder","Good news: this is the easiest habit to change."]},tabs:["Result","What if?","Challenge"],sim:"What if I refuse bags?",slider:"Bags I'll refuse per week",newp:"Your new yearly plastic",saved:"Saved nationally per year",goalT:"Pick your 30-day goal",goals:["Refuse 1 bag a week","Always bring my own bag","Skip the straw and cutlery"],checkin:"Daily check-in (+10)",done:"Checked in today",pts:"Points",streak:"Streak",share:"Make my share card",shareH:"Long-press or right-click the image to save it, then share.",lb:"Group leaderboard (sample)",dash:"Dashboard",dT:"Policy dashboard",note:"Data comes from participants and may not represent the whole population. Sample data shown.",avgR:"Average bags per person by region",ownA:"Share who bring their own bag, by age",drv:"Share who take a bag, by purchase type",asks:"Recommended policy asks",brief:"Get policy brief",copied:"Brief copied to clipboard",comm:"Together we've avoided",home:"Take the quiz",b:["First Step","Goal Setter","3-Day Streak","Bag Refuser"]},
+th:{hook:"คุณใช้พลาสติกมากแค่ไหนในหนึ่งปี?",sub:"แบบทดสอบ 2 นาทีเกี่ยวกับนิสัยการซื้อของที่ร้านสะดวกซื้อ ไม่ต้องล็อกอิน ไม่ตัดสินใคร",start:"เริ่มเลย",live:(p,b)=>`${p} คนทำแบบทดสอบแล้ว · หลีกเลี่ยงถุงได้ ${b} ใบ`,next:"ถัดไป",back:"ย้อนกลับ",show:"ดูผลของฉัน",consent:"ฉันยินยอมให้เก็บคำตอบแบบไม่ระบุตัวตนเพื่อการวิจัยและผลักดันนโยบาย",priv:"ประกาศความเป็นส่วนตัว",privT:"เราเก็บเฉพาะคำตอบเหล่านี้ พร้อมช่วงอายุและภูมิภาคที่ไม่บังคับ ไม่เก็บชื่อ อีเมล หรือ IP ข้อมูลไม่ระบุตัวตน ใช้เป็นภาพรวมเท่านั้น และไม่แสดงรายบุคคล คุณทำแบบทดสอบได้โดยไม่ต้องยินยอม (ร่างตาม PDPA โปรดใช้ข้อความทางกฎหมายจริง)",yr:"พลาสติกของคุณต่อปี",bagsYr:"ใบต่อปี",ifall:"ถ้าทุกคนใช้ชีวิตเหมือนฉัน…",tonnes:"ตันพลาสติกต่อปี",how:"วิธีคำนวณ",persona:{eco:["🌟 แชมป์รักษ์โลก","คุณทำได้ดีแล้ว ทำต่อและชวนเพื่อนด้วย"],occ:["🙂 สายพกบ้างไม่พกบ้าง","คุณอยู่ตรงกลาง การเปลี่ยนเล็กๆ ช่วยได้มาก"],hoard:["🛍️ นักสะสมถุง","ข่าวดี นี่คือนิสัยที่เปลี่ยนง่ายที่สุด"]},tabs:["ผลลัพธ์","ถ้าลดล่ะ?","ชาเลนจ์"],sim:"ถ้าฉันปฏิเสธถุง?",slider:"จำนวนถุงที่จะปฏิเสธต่อสัปดาห์",newp:"พลาสติกต่อปีของคุณหลังลด",saved:"ลดได้ทั่วประเทศต่อปี",goalT:"เลือกเป้าหมาย 30 วัน",goals:["ปฏิเสธถุง 1 ใบต่อสัปดาห์","พกถุงมาเองทุกครั้ง","ไม่รับหลอดและช้อนส้อม"],checkin:"เช็กอินรายวัน (+10)",done:"เช็กอินวันนี้แล้ว",pts:"แต้ม",streak:"ต่อเนื่อง",share:"สร้างการ์ดแชร์",shareH:"กดค้างที่รูปเพื่อบันทึก แล้วแชร์ได้เลย",lb:"อันดับกลุ่ม (ตัวอย่าง)",dash:"แดชบอร์ด",dT:"แดชบอร์ดนโยบาย",note:"ข้อมูลมาจากผู้เข้าร่วมและอาจไม่ได้แทนประชากรทั้งหมด (แสดงข้อมูลตัวอย่าง)",avgR:"ถุงเฉลี่ยต่อคน แยกตามภูมิภาค",ownA:"สัดส่วนผู้พกถุงเอง แยกตามอายุ",drv:"สัดส่วนผู้รับถุง แยกตามประเภทสินค้า",asks:"ข้อเสนอเชิงนโยบาย",brief:"รับสรุปนโยบาย",copied:"คัดลอกสรุปแล้ว",comm:"เราช่วยกันลดถุงได้",home:"ทำแบบทดสอบ",b:["ก้าวแรก","ตั้งเป้าหมาย","ต่อเนื่อง 3 วัน","นักปฏิเสธถุง"]}};
+let lang="en",view="land",step=0,ans={buys:[]},consent=false,refuse=2,res=null,tab=0,shareImg="";
+let P={pts:0,streak:0,last:"",badges:[],goal:-1,avoided:0};
+try{Object.assign(P,JSON.parse(localStorage.getItem("ielm")||"{}"))}catch(e){}
+const keep=()=>{try{localStorage.setItem("ielm",JSON.stringify(P))}catch(e){}};
+const t=k=>S[lang][k],fm=n=>Math.round(n).toLocaleString(),$=id=>document.getElementById(id);
+function calc(a){const v=a.visits??2.5,eff=C.bagShare[a.bag||"sometimes"]*(1-C.ownBagCut[a.own||"never"]);
+ const bags=v*52*eff,cut=v*52*C.cutleryPerVisit[a.cut||"never"],tk=52*C.takeawayPerWeek[a.take||"never"];
+ const g=bags*C.bagG+cut*C.cutleryG+tk*C.containerG;
+ return{v,eff,bags,cut,tk,g,tonnes:g*C.population/1e6,p:bags<C.persona.eco?"eco":bags<C.persona.occ?"occ":"hoard"}}
+function saveResult(a,r){if(!consent)return;try{const k="ielm_results",d=JSON.parse(localStorage.getItem(k)||"[]");
+ d.push({age:a.age||null,region:a.region||null,bags:Math.round(r.bags),buys:a.buys,ts:Date.now()});localStorage.setItem(k,JSON.stringify(d))}catch(e){}}
+function tog(){lang=lang=="en"?"th":"en";document.documentElement.lang=lang;$("lg").textContent=lang=="en"?"TH":"EN";draw()}
+function go(v){view=v;if(v=="land"){step=0;ans={buys:[]};res=null}draw();scrollTo(0,0)}
+function toast(m){const e=$("toast");e.textContent=m;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
+function confetti(){if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;for(let i=0;i<26;i++){const s=document.createElement("span");s.className="cf";s.textContent=["🎉","🌿","⭐","♻️"][i%4];s.style.left=Math.random()*100+"vw";s.style.animationDelay=Math.random()*.4+"s";document.body.appendChild(s);setTimeout(()=>s.remove(),2200)}}
+function badge(i){if(P.badges.includes(i))return;P.badges.push(i);keep();confetti();toast("🏅 "+S[lang].b[i])}
+function addPts(n){P.pts+=n;keep()}
+function count(id,to,dec){const e=$(id);if(!e)return;const T=900,s=performance.now(),f=n=>dec?n.toFixed(1):fm(n);
+ (function st(now){const p=Math.min(1,(now-s)/T);e.textContent=f(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(st)})(s)}
+function pick(id,v){ans[id]=v;if(!Q[step].multi){const s=step;setTimeout(()=>{if(step==s){step++;draw()}},170);draw()}}
+function mult(v){const a=ans.buys,i=a.indexOf(v);i<0?a.push(v):a.splice(i,1);draw()}
+function nxt(d){if(step+d>=Q.length){res=calc(ans);saveResult(ans,res);if(!P.badges.includes(0))addPts(50);badge(0);view="res";tab=0;draw();return}step=Math.max(0,step+d);if(step<0)step=0;draw()}
+function setTab(i){tab=i;draw()}
+function setGoal(i){P.goal=i;addPts(30);badge(1);keep();draw()}
+// Local calendar day (toISOString is UTC, which rolls over at 7am in Thailand)
+const day=(ago=0)=>new Date(Date.now()-ago*864e5).toLocaleDateString("en-CA");
+function checkin(){const d=day();if(P.last==d)return;const y=day(1);
+ P.streak=P.last==y?P.streak+1:1;P.last=d;P.avoided+=Math.max(1,refuse);addPts(10);if(P.streak>=3)badge(2);keep();draw()}
+function simr(v){refuse=+v;if(refuse>=5)badge(3);const r=res,saved=Math.min(r.bags,refuse*52),ng=r.g-saved*C.bagG;
+ $("np").textContent=(ng/1000).toFixed(2)+" kg";$("ns").textContent=fm(saved*C.bagG*C.population/1e6)+" t";$("rv").textContent=refuse}
+function shareCard(){const c=document.createElement("canvas");c.width=600;c.height=400;const x=c.getContext("2d"),r=res;
+ x.fillStyle="#FBF7EF";x.fillRect(0,0,600,400);x.fillStyle="#1F7A4D";x.fillRect(0,0,600,90);x.fillStyle="#fff";x.font="bold 30px sans-serif";x.fillText("If Everyone Lived Like Me",24,56);
+ x.fillStyle="#1d2b22";x.font="22px sans-serif";x.fillText("My plastic footprint at the convenience store:",24,140);
+ x.fillStyle="#1F7A4D";x.font="bold 70px sans-serif";x.fillText((r.g/1000).toFixed(1)+" kg/yr",24,230);
+ x.fillStyle="#1d2b22";x.font="22px sans-serif";x.fillText("If everyone lived like me: "+fm(r.tonnes)+" tonnes",24,290);
+ x.fillStyle="#FF6B2C";x.font="bold 24px sans-serif";x.fillText("What's yours? Take the quiz →",24,360);shareImg=c.toDataURL("image/png");draw()}
+function brief(){const s=C.sample,top=[...s.regions].sort((a,b)=>b[1]-a[1])[0];
+ const txt=`POLICY BRIEF (sample data, n=${s.n})\nFinding 1: Highest average use is in ${top[0]} (${top[1]} bags/person/yr).\nAsk: Mandate point-of-sale bag charges or opt-in bags at convenience stores.\nFinding 2: Only ${s.ownBagByAge[0][1]}% of 18-24s bring their own bag.\nAsk: Fund reusable-bag campaigns and discounts for youth.\nFinding 3: Hot food drives bag use (${s.drivers[0][1]}%).\nAsk: Require reusable or compostable packaging standards for hot food.\nCaveat: participant data, not representative of the full population.`;
+ try{navigator.clipboard.writeText(txt).then(()=>toast(t("copied")),()=>{})}catch(e){}$("bp").textContent=txt;$("bp").hidden=false}
+const bars=(a,max,u)=>a.map(([n,v])=>`<div class="row"><span>${n}</span><div class="bar"><i style="width:${v/max*100}%"></i></div><b>${v}${u||""}</b></div>`).join("");
+function draw(){const a=$("app"),T=S[lang];$("navd").textContent=view=="dash"?T.home:T.dash;$("navd").onclick=()=>go(view=="dash"?"land":"dash");let h="";
+ const pe=fm(C.communityPeople+(P.badges.includes(0)?1:0)),bg=fm(C.communityBags+P.avoided);
+ if(view=="land")h=`<h1>${T.hook}</h1><p class="mut">${T.sub}</p><div class="card"><div class="big">🛍️</div><p><b>${T.live(pe,bg)}</b></p></div><button class="btn" onclick="go('quiz')">${T.start}</button>`;
+ else if(view=="quiz"){const q=Q[step],last=step==Q.length-1;
+  h=`<div class="bar" role="progressbar" aria-valuenow="${step+1}" aria-valuemax="${Q.length}"><i style="width:${(step+1)/Q.length*100}%"></i></div><p class="mut">${step+1} / ${Q.length}</p><h2>${q.t[lang]}</h2>`;
+  if(q.sel)h+=`<select aria-label="${q.t[lang]}" onchange="ans.${q.id}=this.value"><option value="">—</option>${q.o.map(o=>`<option value="${o[0]}"${ans[q.id]==o[0]?" selected":""}>${o[1][lang]}</option>`).join("")}</select>`;
+  else h+=q.o.map(o=>{const on=q.multi?ans.buys.includes(o[0]):ans[q.id]==o[0];return`<button class="opt${on?" on":""}" aria-pressed="${on}" onclick="${q.multi?`mult('${o[0]}')`:`pick('${q.id}',${typeof o[0]=="string"?`'${o[0]}'`:o[0]})`}">${o[1][lang]}</button>`}).join("");
+  if(last)h+=`<label class="card" style="display:block"><input type="checkbox" ${consent?"checked":""} onchange="consent=this.checked"> ${T.consent}</label><details><summary>${T.priv}</summary><p class="mut">${T.privT}</p></details>`;
+  h+=`<button class="btn alt" onclick="nxt(1)">${last?T.show:T.next}</button>${step?`<button class="pill" style="margin:12px 0" onclick="nxt(-1)">← ${T.back}</button>`:""}`}
+ else if(view=="res"){const r=res,pr=T.persona[r.p];
+  h=`<div class="tabs" role="tablist">${T.tabs.map((x,i)=>`<button class="${tab==i?"on":""}" onclick="setTab(${i})">${x}</button>`).join("")}</div>`;
+  if(tab==0)h+=`<div class="card"><p class="mut">${T.yr}</p><div class="big"><span id="c1">0</span> kg</div><p><b>${fm(r.bags)}</b> ${T.bagsYr}</p></div><div class="card"><h2>${pr[0]}</h2><p>${pr[1]}</p></div><div class="card"><p class="mut">${T.ifall}</p><div class="big"><span id="c2">0</span></div><p>${T.tonnes}</p></div>
+   <details class="card"><summary>${T.how}</summary><p class="mut">Bags/yr = visits/wk × 52 × share taking a bag × (1 − own-bag cut) = ${r.v} × 52 × ${C.bagShare[ans.bag||"sometimes"]} × ${1-C.ownBagCut[ans.own||"never"]} = ${fm(r.bags)}<br>Weight = bags × ${C.bagG} g + cutlery items × ${C.cutleryG} g + containers × ${C.containerG} g<br>Scale-up = grams × ${fm(C.population)} people ÷ 1,000,000 = tonnes<br><i>Bag weight, population and range midpoints are placeholders pending sources.</i></p></details><button class="btn" onclick="setTab(1)">${T.tabs[1]} →</button>`;
+  if(tab==1){const mx=Math.max(2,Math.ceil(r.bags/52));if(refuse>mx)refuse=mx;h+=`<div class="card"><h2>${T.sim}</h2><label for="sl">${T.slider}: <b id="rv">${refuse}</b></label><input id="sl" type="range" min="0" max="${mx}" value="${refuse}" oninput="simr(this.value)"><p class="mut">${T.newp}</p><div class="big" id="np"></div><p class="mut">${T.saved}</p><div class="big" id="ns"></div></div><button class="btn" onclick="setTab(2)">${T.tabs[2]} →</button>`}
+  if(tab==2){h+=`<div class="card"><h2>${T.goalT}</h2>${T.goals.map((g,i)=>`<button class="opt${P.goal==i?" on":""}" onclick="setGoal(${i})">${g}</button>`).join("")}<p><b>${T.pts}: ${P.pts}</b> · ${T.streak}: 🔥${P.streak}</p><button class="btn alt" ${P.last==day()?"disabled":""} onclick="checkin()">${P.last==day()?T.done:T.checkin}</button><div style="margin-top:10px">${P.badges.map(i=>`<span class="badge">🏅 ${T.b[i]}</span>`).join("")}</div></div>
+   <div class="card"><p><b>${T.comm} ${bg}</b></p><div class="bar"><i style="width:${Math.min(100,(C.communityBags+P.avoided)/1500)}%"></i></div></div>
+   <div class="card"><b>${T.lb}</b>${bars([["Chula",420],["Thammasat",388],["Your office",P.pts+250]],Math.max(500,P.pts+250))}</div>
+   <button class="btn" onclick="shareCard()">${T.share}</button>${shareImg?`<img src="${shareImg}" alt="Share card" style="width:100%;border-radius:16px;margin-top:12px"><p class="mut">${T.shareH}</p>`:""}`}
+ }else if(view=="dash"){const s=C.sample;
+  h=`<h1>${T.dT}</h1><p class="mut">${T.note} n=${fm(s.n)}</p><div class="card"><h2>${T.avgR}</h2>${bars(s.regions,250)}</div><div class="card"><h2>${T.ownA}</h2>${bars(s.ownBagByAge,100,"%")}</div><div class="card"><h2>${T.drv}</h2>${bars(s.drivers,100,"%")}</div>
+  <div class="card"><h2>${T.asks}</h2><ol><li>Point-of-sale bag charge or opt-in bags <span class="mut">(regional averages)</span></li><li>Youth reusable-bag incentives <span class="mut">(own-bag share by age)</span></li><li>Hot-food packaging standards <span class="mut">(purchase-type driver)</span></li></ol></div><button class="btn alt" onclick="brief()">${T.brief}</button><pre id="bp" hidden></pre>`}
+ a.innerHTML=h+`<p class="mut" style="margin-top:24px">🔒 ${T.priv}: ${T.privT.slice(0,90)}…</p>`;
+ if(view=="res"&&tab==0){count("c1",res.g/1000,1);count("c2",res.tonnes)}if(view=="res"&&tab==1)simr(refuse)}
+draw();
+</script></body></html>
